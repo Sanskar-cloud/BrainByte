@@ -1,0 +1,1 @@
+web: ./build/install/sample-app/bin/sample-app

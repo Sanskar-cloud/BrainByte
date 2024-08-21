@@ -1,0 +1,465 @@
+openapi: "3.0.3"
+info:
+  title: "Application API"
+  description: "Application API"
+  version: "1.0.0"
+servers:
+  - url: "http://192.168.29.108:8082"
+
+
+
+paths:
+  /api/user/create:
+    post:
+      summary: "Create a user account"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAccountRequest"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicApiResponse"
+  /api/user/login:
+    post:
+      summary: "Login user"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicApiResponse"
+  security:
+    - bearerAuth: []
+  /api/user/reset_password:
+    post:
+      summary: "Reset user password"
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicApiResponse"
+  /api/user/authenticate:
+    get:
+      summary: "Authenticate user"
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+  /api/course/popular_categories:
+    get:
+      summary: "Get popular categories"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+  /api/course/category/create:
+    post:
+      summary: "Create a new category"
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                categoryName:
+                  type: string
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+  /api/course/category/update:
+    post:
+      summary: "Update an existing category"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: categoryId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                categoryName:
+                  type: string
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+  /api/course/category/delete:
+    delete:
+      summary: "Delete an existing category"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: categoryId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+  /api/comment/create:
+    post:
+      summary: "Create a comment"
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCommentRequest"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicApiResponse"
+  /api/user/course/comments:
+    get:
+      summary: "Get comments for a course"
+      parameters:
+        - in: query
+          name: courseId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  successful:
+                    type: "boolean"
+                  data:
+                    type: "array"
+                    items:
+                      type: "object"
+  /api/comment/delete:
+    delete:
+      summary: "Delete a comment"
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteCommentRequest"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicApiResponse"
+
+  /api/user/search/courses:
+    get:
+      summary: "Search courses"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicApiResponse"
+        '400':
+          description: "Bad Request"
+        '404':
+          description: "Not Found"
+  /api/tchr/courses:
+    get:
+      summary: "Get courses for a teacher"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: tchrId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicApiResponse"
+        '400':
+          description: "Bad Request"
+        '404':
+          description: "Not Found"
+  /api/user/profile/courses:
+    get:
+      summary: "Get courses for user profile"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicApiResponse"
+        '400':
+          description: "Bad Request"
+        '404':
+          description: "Not Found"
+  /api/user/course:
+    get:
+      summary: "Get course details"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: courseId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicApiResponse"
+        '400':
+          description: "Bad Request"
+        '404':
+          description: "Not Found"
+  /api/course/most_watched_courses:
+    get:
+      summary: "Get most watched courses"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+  /api/course/previous_watched_courses:
+    get:
+      summary: "Get previously watched courses"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+  /api/course/others_watched_courses:
+    get:
+      summary: "Get others watched courses"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: pageSize
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+components:
+  schemas:
+    CreateAccountRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    ResetPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        newPassword:
+          type: string
+    CreateCommentRequest:
+      type: object
+      properties:
+        courseId:
+          type: string
+        comment:
+          type: string
+    DeleteCommentRequest:
+      type: object
+      properties:
+        commentId:
+          type: string
+    BasicApiResponse:
+      type: object
+      properties:
+        successful:
+          type: boolean
+        message:
+          type: string
+    securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
